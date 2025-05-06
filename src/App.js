@@ -3,91 +3,95 @@ import ProductionStage from './components/ProductionStage';
 import StageSelector from './components/StageSelector';
 import ProductionSummary from './components/ProductionSummary';
 
+// Show all stages on a single page
+
 function App() {
   const [numStages, setNumStages] = useState(null);
-  const [currentStage, setCurrentStage] = useState(0);
   const [stagesData, setStagesData] = useState([]);
+  const [completed, setCompleted] = useState([]);
   const [showSummary, setShowSummary] = useState(false);
-  const [editStage, setEditStage] = useState(null);
 
-  const handleStageComplete = (stageData) => {
-    const updatedStages = [...stagesData];
-    updatedStages[currentStage] = stageData;
-    setStagesData(updatedStages);
-    
-    if (currentStage + 1 < numStages) {
-      setCurrentStage(currentStage + 1);
-    } else {
+  // Handler for selecting number of stages
+  const handleSelectStages = (n) => {
+    setNumStages(n);
+    setStagesData(Array(n).fill({}));
+    setCompleted(Array(n).fill(false));
+    setShowSummary(false);
+  };
+
+  // Handler for updating a stage's data
+  const handleStageChange = (stageIdx, data) => {
+    const updated = [...stagesData];
+    updated[stageIdx] = data;
+    setStagesData(updated);
+  };
+
+  // Handler for marking a stage as complete
+  const handleStageComplete = (stageIdx, data) => {
+    handleStageChange(stageIdx, data);
+    const updated = [...completed];
+    updated[stageIdx] = true;
+    setCompleted(updated);
+    // If last stage, show summary
+    if (stageIdx === (numStages - 1)) {
       setShowSummary(true);
     }
   };
 
-  const handleStagePrevious = (stageData) => {
-    // Save current stage data even when going back
-    const updatedStages = [...stagesData];
-    updatedStages[currentStage] = stageData;
-    setStagesData(updatedStages);
-    
-    // Go to previous stage if not at first stage
-    if (currentStage > 0) {
-      setCurrentStage(currentStage - 1);
-    }
-  };
-
+  // Handler for editing a stage (un-complete it)
   const handleEditStage = (idx) => {
-    setEditStage(idx);
-    setCurrentStage(idx);
+    const updated = [...completed];
+    updated[idx] = false;
+    setCompleted(updated);
     setShowSummary(false);
   };
 
+  // Handler for reset
   const handleReset = () => {
     setNumStages(null);
-    setCurrentStage(0);
     setStagesData([]);
+    setCompleted([]);
     setShowSummary(false);
-    setEditStage(null);
   };
 
+  // If numStages not selected, show selector
+  if (numStages === null) {
+    return <StageSelector onSelect={handleSelectStages} />;
+  }
+
+  // If summary is to be shown
+  if (showSummary) {
+    return (
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}>
+        <h1 style={{ textAlign: 'center', marginTop: 24, color: '#6b8e23' }}>Production Planning</h1>
+        <ProductionSummary stages={stagesData} onEdit={handleEditStage} onReset={handleReset} />
+      </div>
+    );
+  }
+
+  // Otherwise, show all stages for input
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
+    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}>
       <h1 style={{ textAlign: 'center', marginTop: 24, color: '#6b8e23' }}>Production Planning</h1>
-      
-      {!numStages && <StageSelector onSelect={setNumStages} />}
-      
-      {numStages && !showSummary && (
-        <>
-          <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <h2 style={{ color: '#6b8e23' }}>Stage {currentStage + 1} of {numStages}</h2>
-            <div style={{ height: '4px', background: '#e0d7b6', margin: '20px auto', width: '60%', borderRadius: '2px' }}>
-              <div style={{
-                height: '100%',
-                width: `${((currentStage + 1) / numStages) * 100}%`,
-                background: '#6b8e23',
-                borderRadius: '2px',
-                transition: 'width 0.3s ease'
-              }} />
-            </div>
-          </div>
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 48 }}>
+        {Array.from({ length: numStages }).map((_, stageIdx) => (
+          <div key={stageIdx} style={{ border: '1px solid #e0d7b6', borderRadius: 12, background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.04)', padding: 32 }}>
+            <h2 style={{ color: '#6b8e23', marginBottom: 24 }}>Stage {stageIdx + 1}</h2>
             <ProductionStage
-              key={currentStage}
-              stageIndex={currentStage}
-              initialData={stagesData[currentStage]}
-              onComplete={handleStageComplete}
-              onPrevious={handleStagePrevious}
-              isLast={currentStage === numStages - 1}
+              stageIndex={stageIdx}
+              initialData={stagesData[stageIdx]}
+              onComplete={data => handleStageComplete(stageIdx, data)}
+              onPrevious={null}
+              isLast={stageIdx === numStages - 1}
             />
+            {completed[stageIdx] && (
+              <button onClick={() => handleEditStage(stageIdx)} style={{ marginTop: 16, background: '#f7c873', color: '#6b8e23', border: 'none', borderRadius: 6, padding: '8px 20px', cursor: 'pointer' }}>
+                Edit Stage {stageIdx + 1}
+              </button>
+            )}
           </div>
-        </>
-      )}
-      
-      {numStages && showSummary && (
-        <ProductionSummary 
-          stages={stagesData} 
-          onEdit={handleEditStage}
-          onReset={handleReset}
-        />
-      )}
+        ))}
+      </div>
     </div>
   );
 }

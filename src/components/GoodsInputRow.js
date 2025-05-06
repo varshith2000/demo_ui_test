@@ -16,13 +16,13 @@ const Select = styled.select`
   flex: 2;
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid ${props => props.hasError ? '#d32f2f' : '#e0d7b6'};
+  border: 1px solid ${props => props.$hasError ? '#d32f2f' : '#e0d7b6'};
   margin-right: 10px;
   font-size: 1rem;
 
   &:focus {
     outline: none;
-    border-color: ${props => props.hasError ? '#d32f2f' : '#6b8e23'};
+    border-color: ${props => props.$hasError ? '#d32f2f' : '#6b8e23'};
   }
 `;
 
@@ -30,13 +30,13 @@ const Input = styled.input`
   flex: 1;
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid ${props => props.hasError ? '#d32f2f' : '#e0d7b6'};
+  border: 1px solid ${props => props.$hasError ? '#d32f2f' : '#e0d7b6'};
   font-size: 1rem;
   margin-right: 10px;
 
   &:focus {
     outline: none;
-    border-color: ${props => props.hasError ? '#d32f2f' : '#6b8e23'};
+    border-color: ${props => props.$hasError ? '#d32f2f' : '#6b8e23'};
   }
 `;
 
@@ -89,34 +89,41 @@ export default function GoodsInputRow({
 
   return (
     <Row>
-      <InputRow>
-        <Select value={value.name || ''} onChange={handleSelect} hasError={hasError}>
-          <option value="" disabled>{placeholder}</option>
-          {goodsList.map((g) => (
-            <option key={g} value={g}>{g}</option>
-          ))}
-          <option value="__add_new__">+ Add new...</option>
-        </Select>
-        <Input
-          type="number"
-          min={0}
-          value={value.qty || ''}
-          onChange={e => onChange({ ...value, qty: e.target.value })}
-          placeholder="Qty"
-          hasError={hasError}
-        />
-        {showDimension && (
-          <Select
-            value={value.dimension || ''}
-            onChange={handleDimensionChange}
-            style={{ flex: 1 }}
-            hasError={hasError}
-          >
-            <option value="">Unit</option>
-            <option value="kg">kg</option>
-            <option value="g">g</option>
-            <option value="l">L</option>
+      <InputRow style={{ flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ flex: 2, minWidth: 140 }}>
+          <Select value={value.name || ''} onChange={handleSelect} $hasError={hasError} style={{ width: '100%' }}>
+            <option value="" disabled>{placeholder}</option>
+            {goodsList.map((g) => (
+              <option key={g} value={g}>{g}</option>
+            ))}
+            <option value="__add_new__">+ Add new...</option>
           </Select>
+        </div>
+        <div style={{ flex: 1, minWidth: 80 }}>
+          <Input
+            type="number"
+            min={0}
+            value={value.qty || ''}
+            onChange={e => onChange({ ...value, qty: e.target.value })}
+            placeholder="Qty"
+            $hasError={hasError}
+            style={{ width: '100%' }}
+          />
+        </div>
+        {showDimension && (
+          <div style={{ flex: 1, minWidth: 80 }}>
+            <Select
+              value={value.dimension || ''}
+              onChange={handleDimensionChange}
+              $hasError={hasError}
+              style={{ width: '100%' }}
+            >
+              <option value="">Unit</option>
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="l">L</option>
+            </Select>
+          </div>
         )}
         {allowRemove && (
           <Button type="button" onClick={onRemove}>-</Button>

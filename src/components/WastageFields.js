@@ -30,12 +30,12 @@ const Input = styled.input`
   flex: 1;
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid ${props => props.hasError ? '#d32f2f' : '#e0d7b6'};
+  border: 1px solid ${props => props.$hasError ? '#d32f2f' : '#e0d7b6'};
   font-size: 1rem;
 
   &:focus {
     outline: none;
-    border-color: ${props => props.hasError ? '#d32f2f' : '#6b8e23'};
+    border-color: ${props => props.$hasError ? '#d32f2f' : '#6b8e23'};
   }
 `;
 
@@ -43,12 +43,12 @@ const Select = styled.select`
   flex: 1;
   padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid ${props => props.hasError ? '#d32f2f' : '#e0d7b6'};
+  border: 1px solid ${props => props.$hasError ? '#d32f2f' : '#e0d7b6'};
   font-size: 1rem;
 
   &:focus {
     outline: none;
-    border-color: ${props => props.hasError ? '#d32f2f' : '#6b8e23'};
+    border-color: ${props => props.$hasError ? '#d32f2f' : '#6b8e23'};
   }
 `;
 
@@ -140,7 +140,7 @@ export default function WastageFields({
               <Select
                 value={entry.good || ''}
                 onChange={e => handleWastageChange(index, 'good', e.target.value)}
-                hasError={Boolean(errors.wastageEntries?.[index]?.good)}
+                $hasError={Boolean(errors.wastageEntries?.[index]?.good)}
                 style={{ flex: 2 }}
               >
                 <option value="">Select a good...</option>
@@ -156,7 +156,7 @@ export default function WastageFields({
                 value={entry.wastage || ''}
                 onChange={e => handleWastageChange(index, 'wastage', e.target.value)}
                 placeholder="Wastage"
-                hasError={Boolean(errors.wastageEntries?.[index]?.wastage)}
+                $hasError={Boolean(errors.wastageEntries?.[index]?.wastage)}
               />
               <Select
                 value={entry.type || 'percent'}
@@ -186,7 +186,7 @@ export default function WastageFields({
             value={value.time || ''}
             onChange={e => onChange({ ...value, time: e.target.value })}
             placeholder="e.g. 2h 30m"
-            hasError={Boolean(errors.time)}
+            $hasError={Boolean(errors.time)}
           />
         </InputRow>
         {errors.time && <ErrorText>{errors.time}</ErrorText>}

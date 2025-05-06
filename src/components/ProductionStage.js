@@ -141,12 +141,28 @@ export default function ProductionStage({ stageIndex, initialData, onComplete, o
   };
 
   return (
-    <form style={{ marginBottom: 32 }} onSubmit={handleNext}>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '32px' }}>
+    <form style={{ marginBottom: 32, position: 'relative' }} onSubmit={handleNext}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '32px',
+        alignItems: 'flex-start',
+        position: 'relative',
+        padding: '32px 0',
+        background: '#fcfcf7',
+        borderRadius: '16px',
+        border: '1.5px solid #e0d7b6',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+        flexWrap: 'wrap',
+        minWidth: 0,
+        width: '100%',
+        boxSizing: 'border-box',
+        overflow: 'visible',
+      }}>
         {/* Left: Raw/Intermediate Goods */}
-        <div style={{ flex: 1 }}>
-          <h3 style={{ textAlign: 'center', color: '#6b8e23', marginBottom: '16px' }}>Raw/Intermediate Goods</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ flex: 1, minWidth: 260, position: 'relative', zIndex: 2, wordBreak: 'break-word', overflow: 'visible' }}>
+          <h3 style={{ textAlign: 'center', color: '#6b8e23', marginBottom: '16px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Raw/Intermediate Goods</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e0d7b6', minWidth: 0, overflow: 'hidden' }}>
             {rawGoods.map((row, idx) => (
               <GoodsInputRow
                 key={idx}
@@ -170,7 +186,8 @@ export default function ProductionStage({ stageIndex, initialData, onComplete, o
                 borderRadius: '4px',
                 padding: '8px 16px',
                 cursor: 'pointer',
-                color: '#6b8e23'
+                color: '#6b8e23',
+                marginTop: 8
               }}
             >
               + Add Raw Good
@@ -179,20 +196,22 @@ export default function ProductionStage({ stageIndex, initialData, onComplete, o
         </div>
 
         {/* Middle: Wastage, etc. */}
-        <div style={{ flex: 1 }}>
-          <h3 style={{ textAlign: 'center', color: '#6b8e23', marginBottom: '16px' }}>Production Details</h3>
-          <WastageFields
-            value={middleFields}
-            onChange={setMiddleFields}
-            wastageGoods={selectedRawGoods}
-            errors={showErrors ? validationErrors : {}}
-          />
+        <div style={{ flex: 1, minWidth: 320, position: 'relative', zIndex: 2, wordBreak: 'break-word', overflow: 'visible' }}>
+          <h3 style={{ textAlign: 'center', color: '#6b8e23', marginBottom: '16px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Production Details</h3>
+          <div style={{ background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e0d7b6', minWidth: 0, overflow: 'hidden' }}>
+            <WastageFields
+              value={middleFields}
+              onChange={setMiddleFields}
+              wastageGoods={selectedRawGoods}
+              errors={showErrors ? validationErrors : {}}
+            />
+          </div>
         </div>
 
         {/* Right: Output Goods */}
-        <div style={{ flex: 1 }}>
-          <h3 style={{ textAlign: 'center', color: '#6b8e23', marginBottom: '16px' }}>Output Goods</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ flex: 1, minWidth: 260, position: 'relative', zIndex: 2, wordBreak: 'break-word', overflow: 'visible' }}>
+          <h3 style={{ textAlign: 'center', color: '#6b8e23', marginBottom: '16px', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Output Goods</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', background: '#fff', borderRadius: 10, padding: 16, border: '1px solid #e0d7b6', minWidth: 0, overflow: 'hidden' }}>
             {outputGoods.map((row, idx) => (
               <GoodsInputRow
                 key={idx}
@@ -216,42 +235,24 @@ export default function ProductionStage({ stageIndex, initialData, onComplete, o
                 borderRadius: '4px',
                 padding: '8px 16px',
                 cursor: 'pointer',
-                color: '#6b8e23'
+                color: '#6b8e23',
+                marginTop: 8
               }}
             >
               + Add Output Good
             </button>
           </div>
         </div>
+
+
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: 32 }}>
-        {showErrors && Object.keys(validationErrors).length > 0 && (
-          <div style={{ color: '#d32f2f', marginBottom: 16, padding: '8px', background: '#ffebee', borderRadius: '4px' }}>
-            Please fix the validation errors before proceeding
-          </div>
-        )}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
-          {stageIndex > 0 && (
-            <button
-              type="button"
-              onClick={handlePrevious}
-              style={{
-                background: '#f0f0f0',
-                color: '#666',
-                border: '1px solid #ddd',
-                borderRadius: 8,
-                padding: '10px 32px',
-                fontSize: '1.1rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  background: '#e0e0e0',
-                }
-              }}
-            >
-              Previous
-            </button>
+      {isLast && (
+        <div style={{ textAlign: 'center', marginTop: 32 }}>
+          {showErrors && Object.keys(validationErrors).length > 0 && (
+            <div style={{ color: '#d32f2f', marginBottom: 16, padding: '8px', background: '#ffebee', borderRadius: '4px' }}>
+              Please fix the validation errors before proceeding
+            </div>
           )}
           <button
             type="submit"
@@ -266,10 +267,10 @@ export default function ProductionStage({ stageIndex, initialData, onComplete, o
               transition: 'all 0.2s ease'
             }}
           >
-            {isLast ? 'Finish' : 'Next'}
+            Finish
           </button>
         </div>
-      </div>
+      )}
 
       <ConfirmationModal
         open={modal.open}
